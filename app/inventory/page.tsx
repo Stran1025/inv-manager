@@ -1,7 +1,3 @@
-import Header from "../components/Header"
-
-
-
 type Items = {
     name: string;
     count: number;
@@ -82,7 +78,6 @@ function Table() {
 export default function Home() {
   return (
     <div>
-      <Header></Header>
       <Table></Table>
     </div>
   );
