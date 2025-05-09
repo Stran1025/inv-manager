@@ -3,6 +3,16 @@
   "style": "default",
   "rsc": true,
   "tsx": true,
+<<<<<<< HEAD
+=======
+  "tailwind": {
+    "config": "tailwind.config.ts",
+    "css": "app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+>>>>>>> 4e3230a088b03788e724d2782e708cf737cee85d
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils"
