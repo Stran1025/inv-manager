@@ -1,30 +1,71 @@
 type Items = {
     name: string;
-    count: number;
-    type: 'Seal' | 'Single' | 'Slab';
-    buyPrice: number;
-    marketPrice: number;
-    link: string
+    condition: string;
+    grade: string | null;
+    quantity: number;
+    buy_price: number;
+    link: string | null;
+    market_price: number;
+    isSeal: boolean;
+    isSlab: boolean;
 }
 
-const inventory:Array<Items> = [
-    {
-        name: 'Booster Bundle - Silver Tempest',
-        count: 25,
-        type: 'Seal',
-        buyPrice: 45,
-        marketPrice: 60,
-        link: 'https://www.tcgplayer.com/product/283396/pokemon-swsh12-silver-tempest-silver-tempest-booster-bundle?Language=English&page=1',
-    },
-    {
-        name: 'Booster Bundle - Twilight Masquerade',
-        count: 25,
-        type: 'Seal',
-        buyPrice: 35,
-        marketPrice: 45,
-        link: 'https://www.tcgplayer.com/product/543852/pokemon-sv06-twilight-masquerade-twilight-masquerade-booster-bundle?Language=English&page=1',
+import supabase from '../../utils/supabase'
+
+function getType (i: Items) { 
+    let type = 'Single'
+
+    if (i.isSeal) { 
+        type = 'Seal'
+    } else if (i.isSlab) { 
+        type = 'Slab'
     }
-]
+
+    return type
+}
+
+function getLink (i:Items) {
+    if (i.link) { 
+        return (
+            <a href={i.link} target="_blank">TCG PLAYER</a>
+        )
+    }
+}
+
+async function Inventory() {
+    const { data: items } = await supabase.from('items').select('name, condition, grade, quantity, buy_price, link, market_price, isSeal, isSlab')
+
+    if (!items) {
+    return <p>No Items in Inventory. SOMETHING IS WRONG SANG</p>
+    }
+
+
+    return items.map((i, n) => (
+    <tr key={"item" + n} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {i.name}
+        </th>
+        <td className="px-6 py-4">
+            {getType(i)}
+        </td>
+        <td className="px-6 py-4">
+            ${i.buy_price}
+        </td>
+        <td className="px-6 py-4">
+            {i.grade ? i.grade : ""}
+        </td>
+        <td className="px-6 py-4">
+            {i.quantity}
+        </td>
+        <td className="px-6 py-4">
+            ${i.market_price}
+        </td>
+        <td className="px-6 py-4">
+            {getLink(i)}
+        </td>
+    </tr>
+    ))
+}   
 
 function Table() {
     return (
@@ -37,10 +78,16 @@ function Table() {
                             Product name
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Count
+                            Product Type
                         </th>
                         <th scope="col" className="px-6 py-3">
-                            Price
+                            In Price
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Grade
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                            Quantity
                         </th>
                         <th scope="col" className="px-6 py-3">
                             Link
@@ -49,31 +96,12 @@ function Table() {
                 </thead>
                 {/* --- HEADER --- */}
                 <tbody>
-                    {inventory.map((i , n) => {
-                        return(
-                        <tr key={"item" + n} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {i.name}
-                            </th>
-                            <td className="px-6 py-4">
-                                {i.count}
-                            </td>
-                            <td className="px-6 py-4">
-                                {i.marketPrice}
-                            </td>
-                            <td className="px-6 py-4">
-                                <a href={i.link} target="_blank">TCG PLAYER</a>
-                            </td>
-                        </tr>
-    
-                        )
-                    })}
+                    {Inventory()}
                 </tbody>
             </table>
         </div>
     )
 }
-
 
 export default function Home() {
   return (
