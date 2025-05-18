@@ -96,6 +96,9 @@ function Table() {
                         <th scope="col" className="px-6 py-3">
                             Quantity
                         </th>
+                        <th scope='col' className='px-6 py-3'>
+                            Market
+                        </th>
                         <th scope="col" className="px-6 py-3">
                             Link
                         </th>
